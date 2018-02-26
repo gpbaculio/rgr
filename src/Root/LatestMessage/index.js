@@ -53,7 +53,7 @@ class LatestMessage extends React.Component {
     return (
       <div style={styles.container}>
         <div style={styles.leftContainer}>
-          <div style={{ marginRight: 8 }}>Latest Message:</div>
+          <div style={{ marginRight: 8 }}>Latest Message sadasd:</div>
           <div>{latestMessage}</div>
         </div>
         <div style={styles.rightContainer}>
