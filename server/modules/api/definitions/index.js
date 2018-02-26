@@ -1,27 +1,24 @@
 // external imports
 import { nodeDefinitions, fromGlobalId } from 'graphql-relay'
 // local imports
-import { getMember, Member, getMessage, Message } from '../query/memoryDb'
-import { MemberType, MessageType } from '../query/objectTypes'
+import { getUser } from '../../database'
+import { User } from '../../models'
+import { GraphQLUserType } from '../query/objectTypes'
 
 export const { nodeInterface, nodeField } = nodeDefinitions(
   globalId => {
     const { type, id } = fromGlobalId(globalId)
-    if (type === 'Member') {
-      return getMember(id)
-    } else if (type === 'Message') {
-      return getMessage(id)
+    if (type === 'User') {
+      return getUser(id);
     } else {
       return null
     }
   },
   obj => {
-    if (obj instanceof Member) {
-      return MemberType
-    } else if (obj instanceof Message) {
-      return MessageType
+    if (obj instanceof User) { // instance of User model
+      return GraphQLUserType; // resolved user, viewer type
     } else {
       return null
     }
   }
-)
+);

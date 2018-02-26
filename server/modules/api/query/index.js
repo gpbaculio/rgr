@@ -1,15 +1,19 @@
 // external imports
 import { GraphQLObjectType } from 'graphql'
 // local imports
-import { InstanceType } from './objectTypes'
+import { GraphQLUserType } from './objectTypes'
 import { nodeField } from '../definitions'
+import { getUser } from '../../database'
 
 const query = new GraphQLObjectType({
   name: 'Query',
   fields: {
-    instance: {
-      type: InstanceType,
-      resolve: () => ({})
+    viewer: {
+      type: GraphQLUserType,
+      resolve: (_root, _args, context) => {
+        const { user } = context;
+        return getUser(user.id);
+      }
     },
     node: nodeField
   }
