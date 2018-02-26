@@ -78,7 +78,7 @@ export async function toggleTodoStatus(todoId, status, text) {
 
 export async function removeTodo(id, text) {
   try {
-    await Todo.remove({id});
+    await Todo.remove({ id });
     return id;
   } catch (e) {
     console.log(`FAILED to REMOVE TODO id ${id} = `, e);
