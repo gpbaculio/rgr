@@ -2,7 +2,7 @@ export default {
   container: {
     margin: '20px 100px 0px 100px',
     padding: 10,
-    backgroundColor: '#f9dbe8',
+    backgroundColor: 'red',
     borderRadius: 4,
     display: 'flex',
     flexDirection: 'row',
