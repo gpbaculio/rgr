@@ -1,4 +1,4 @@
-export { Todo }
+export { default as Todo }
 from './Todo';
-export { User }
+export { default as User }
 from './User';
