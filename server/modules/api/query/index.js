@@ -11,7 +11,9 @@ const query = new GraphQLObjectType({
     viewer: {
       type: GraphQLUserType,
       resolve: (_root, _args, context) => {
+        console.log('context = ', context);
         const { user } = context;
+        console.log('context user = ', user);
         return getUser(user.id);
       }
     },

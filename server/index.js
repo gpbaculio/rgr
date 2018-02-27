@@ -8,7 +8,7 @@ import { execute, subscribe } from 'graphql'
 import mongoose from 'mongoose';
 // local imports
 import schema from './modules/api/schema'
-
+import {getUser} from './modules/database'
 // our application
 const app = express()
 const port = 4000
@@ -29,7 +29,17 @@ mongoose
 
 app.get('/', (req, res) => res.send('Hello world! You are at the server port'))
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
+app.use('/graphql', bodyParser.json(), graphqlExpress(async(req) => {
+  let { user } = await getUser(req.headers.authorization);
+  return ({
+    schema,
+    pretty: true,
+    graphiql: true,
+    context: {
+      user
+    },
+  });
+}));
 app.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
   subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`
