@@ -1,0 +1,7 @@
+.nav-item:hover {
+  cursor: pointer;
+}
+
+.navbar-toggler-icon:hover {
+  cursor: pointer;
+}
