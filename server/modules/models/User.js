@@ -17,14 +17,14 @@ const userSchema = new mongoose.Schema({
   },
   todos: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Todo',
       index: true
     }
   ],
   messages: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Message',
       index: true
     }

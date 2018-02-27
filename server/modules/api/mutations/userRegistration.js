@@ -6,7 +6,7 @@ import {User} from '../../models';
 import {generateToken} from '../../auth';
 
 const GraphQLUserRegistrationMutation = mutationWithClientMutationId({
-  name: 'User Registration',
+  name: 'UserRegistration',
   inputFields: {
     displayName: {
       type: new GraphQLNonNull(GraphQLString)

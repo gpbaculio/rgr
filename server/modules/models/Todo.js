@@ -1,6 +1,6 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose from 'mongoose';
 
-const TodoSchema = new Schema({
+const TodoSchema = new mongoose.Schema({
   text: {
     type: String
   },
@@ -8,7 +8,7 @@ const TodoSchema = new Schema({
     type: Boolean
   },
   userId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
 }, {

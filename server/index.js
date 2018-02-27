@@ -5,12 +5,27 @@ import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import { createServer } from 'http'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
 import { execute, subscribe } from 'graphql'
+import mongoose from 'mongoose';
 // local imports
 import schema from './modules/api/schema'
 
 // our application
 const app = express()
 const port = 4000
+
+//connect mongoose
+try {
+  mongoose.connect('mongodb://iamglenbacs:highoutput2017@ds127126.mlab.com:27126/gpb-relay-todos-advance');
+} catch (err) {
+  mongoose.createConnection('mongodb://iamglenbacs:highoutput2017@ds127126.mlab.com:27126/gpb-relay-todos-advance');
+}
+
+mongoose
+  .connection
+  .once('open', () => console.log('MongoDB Running'))
+  .on('error', e => {
+    throw e;
+  });
 
 app.get('/', (req, res) => res.send('Hello world! You are at the server port'))
 

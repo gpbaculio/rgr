@@ -1,12 +1,12 @@
-import {GraphQLNonNull, GraphQLString} from 'graphql';
+import { GraphQLNonNull, GraphQLString } from 'graphql';
 
-import { mutationWithClientMutationId} from 'graphql-relay';
+import { mutationWithClientMutationId } from 'graphql-relay';
 
-import {generateToken} from '../../auth';
-import {User} from '../../models';
+import { generateToken } from '../../auth';
+import { User } from '../../models';
 
 const GraphQLUserLoginMutation = mutationWithClientMutationId({
-  name: 'User Login',
+  name: 'UserLogin',
   inputFields: {
     email: {
       type: new GraphQLNonNull(GraphQLString)

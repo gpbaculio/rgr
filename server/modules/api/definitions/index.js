@@ -16,7 +16,7 @@ export const { nodeInterface, nodeField } = nodeDefinitions(
   },
   obj => {
     if (obj instanceof User) { // instance of User model
-      return GraphQLUserType; // resolved user, viewer type
+      return GraphQLUserType; // resolved user, GraphQLUserType type
     } else {
       return null
     }
