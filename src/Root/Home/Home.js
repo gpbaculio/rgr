@@ -1,8 +1,8 @@
 import React from 'react';
 import './style.css';
 
-const SignUp = () => (
-  <div>This is SignUp!</div>
+const Home = () => (
+  <div>This is Home!</div>
 )
 
-export default SignUp;
+export default Home;

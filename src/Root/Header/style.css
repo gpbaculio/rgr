@@ -1,7 +1,6 @@
-.nav-item:hover {
-  cursor: pointer;
+.navbar {
+  display: flex;
 }
-
-.navbar-toggler-icon:hover {
-  cursor: pointer;
+.dropdown {
+  margin-right: auto; 
 }

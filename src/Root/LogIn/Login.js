@@ -1,8 +1,6 @@
 import React from 'react';
-import axios from 'axios';
 import {withRouter} from 'react-router';
 import './style.css';
-import UserLogin from '../../mutations/UserLoginMutation';
 
 class Login extends React.Component {
 
@@ -28,42 +26,8 @@ class Login extends React.Component {
     e.preventDefault();
     this.setState({
       loginClicked: true
-    }, () => {
-      const {email, password} = this.state;
-      UserLogin.commit(email, password, ({
-        token,
-        email,
-        refreshToken,
-        apiKey,
-        error,
-        auth_token
-      }) => {
-        this.setState((state, props) => {
-          if (error === 'invalidCredentials') {
-            return ({loginError: true, invalidCredentials: true, userNotFound: false, loginClicked: false})
-          }
-          if (error === 'userNotFound') {
-            return ({loginError: true, invalidCredentials: false, userNotFound: true, loginClicked: false})
-          }
-          return ({loginError: false, invalidCredentials: false, userNotFound: false, loginClicked: false})
-        }, () => {
-          const {location} = window;
-          const {history} = this.props;
-          const {loginError, invalidCredentials, userNotFound} = this.state;
-          localStorage.setItem('token', token);
-          localStorage.setItem('email', email);
-          localStorage.setItem('refreshToken', refreshToken);
-          localStorage.setItem('apiKey', apiKey);
-          localStorage.setItem('auth_token', auth_token);
-          localStorage.setItem('error', error);
-          if (loginError === false && invalidCredentials === false && userNotFound === false) {
-            location.reload(true);
-            history.push(`/`);
-          }
-        });
-      });
     });
-  }
+  };
 
   _handleChange = (name, e) => {
     let change = {};
