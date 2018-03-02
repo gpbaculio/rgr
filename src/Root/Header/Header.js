@@ -1,5 +1,5 @@
 import React from 'react';
-import {withRouter} from 'react-router';
+import { NavLink, withRouter } from 'react-router-dom';
 import './style.css';
 
 class Header extends React.Component {
@@ -13,20 +13,44 @@ class Header extends React.Component {
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li className="nav-item active">
-              <a className="nav-link" href="#">
+              <NavLink
+                to="/home"
+                activeClassName="active"
+                className="nav-link"
+              >
                 <i class="fa fa-home"/>
                 Home
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#"><i class="fa fa-user-circle-o"/>Profile</a>
+              <NavLink
+                to="/profile"
+                activeClassName="active"
+                className="nav-link"
+              >
+                <i class="fa fa-user-circle-o"/>
+                Profile
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#"><i class="fa fa-envelope-o" aria-hidden="true"/>Message</a>
+              <NavLink
+                to="/messages"
+                activeClassName="active"
+                className="nav-link"
+              >
+                <i class="fa fa-envelope-o" aria-hidden="true"/>
+                messages
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
-              <i class="fa fa-bell-o"></i>Notifications</a>
+              <NavLink
+                to="/notifications"
+                activeClassName="active"
+                className="nav-link"
+              >
+                <i class="fa fa-bell-o"></i>
+                Notifications
+              </NavLink>
             </li>
           </ul>
           <span class="navbar-text">
