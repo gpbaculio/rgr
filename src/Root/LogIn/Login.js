@@ -1,5 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router';
+
+import userLoginMutation from '../../mutations/userLogin';
 import './style.css';
 
 class Login extends React.Component {
@@ -13,10 +15,8 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
-    const apiKey = localStorage.getItem('apiKey');
-    if (email && token && apiKey) {
+    if (token) {
       const {history} = this.props;
       history.push('/profile')
     }
@@ -24,10 +24,30 @@ class Login extends React.Component {
 
   _login = (e) => {
     e.preventDefault();
-    this.setState({
-      loginClicked: true
-    });
-  };
+    const { email, password } = this.state;
+    this.setState({ loginClicked: true });
+    const mutation = userLoginMutation(
+      { email, password },
+      {
+        onSuccess: ({userLogin}) => {
+          const {error, token} = userLogin;
+          const {history} = this.props;
+          let state = { loginClicked: false, email: '', password: '', };
+          if (!token && error) {
+            state = {
+              ...state,
+              loginError: true,
+            }
+          }
+          localStorage.setItem('token', token);
+          this.setState({ ...state })
+          history.push('/home')
+        },
+        onFailure: transaction => this.setState({ loginError: true, email: '', password: '', }),
+      },
+    );
+    mutation.commit()
+  }
 
   _handleChange = (name, e) => {
     let change = {};

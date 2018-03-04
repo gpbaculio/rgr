@@ -55,10 +55,16 @@ class Header extends React.Component {
             </li>
           </ul>
             {authorized ?
-              <div className='ml1 pointer black' onClick={() => {
-                localStorage.removeItem('token')
-                this.props.history.push('login')
-              }}>Logout</div>
+              <span
+                className="navbar-text"
+                onClick={() => {
+                  localStorage.removeItem('token')
+                  this.props.history.push('login')
+                }}
+              >
+                <i className="fa fa-sign-out"/>
+                Logout
+              </span>
               :
               <NavLink
                 to="/login"
