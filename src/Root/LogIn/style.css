@@ -1,3 +1,7 @@
 .alert-success {
   color: #3c763d;
 }
+.login-container {
+  position: relative;
+  margin: 6.5%;
+}

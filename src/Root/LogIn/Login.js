@@ -74,46 +74,40 @@ class Login extends React.Component {
   render() {
     const {loginError} = this.state;
     return (
-      <div
-        style={{
-        position: 'relative',
-        margin: '6.5%'
-      }}
-        className="text-center row">
+      <div className="login-container text-center row">
         <div
           style={{
           margin: 'auto',
           padding: '2%',
-          backgroundColor: 'black'
+          backgroundColor: '#F8F9FA',
+          border: '1px solid #ced4da',
         }}
           className="container col-lg-5 col-md-5 col-sm-6 col-xs-12 text-center">
           <h3
             style={{
-            fontWeight: '400',
-            marginBottom: '20px',
-            color: 'white'
-          }}>
+              fontWeight: '400',
+              marginBottom: '20px',
+              color: '#6c757d',
+            }}
+          >
             Login
           </h3>
           <div
             style={{
-            margin: '4% 3% 3% 0',
-            padding: '3%',
-            backgroundColor: '#333'
-          }}
-            className="container">
-            <form
-              style={{
-              marginTop: '20px',
-              color: 'white'
+              margin: '4% 3% 3% 0',
+              padding: '3%',
             }}
-              onSubmit={(e) => this._login(e)}>
+            className="container">
+            <form onSubmit={(e) => this._login(e)}>
               <div className="form-group row">
-                <label
+                <label 
                   style={{
-                  color: 'white'
-                }}
-                  className="col-sm-3 col-form-label col-form-label-lg">Email</label>
+                    color: '#6c757d',
+                  }} 
+                  className="col-sm-3 col-form-label col-form-label-lg"
+                >
+                  Email
+                </label>
                 <div className="col-sm-9">
                   <input
                     type="email"
@@ -126,9 +120,12 @@ class Login extends React.Component {
               <div className="form-group row">
                 <label
                   style={{
-                  color: 'white'
-                }}
-                  className="col-sm-3 col-form-label col-form-label-lg">Password</label>
+                    color: '#6c757d',
+                  }} 
+                  className="col-sm-3 col-form-label col-form-label-lg"
+                >
+                  Password
+                </label>
                 <div className="col-sm-9">
                   <input
                     type="password"
@@ -165,7 +162,7 @@ class Login extends React.Component {
           <p
             style={{
             margin: '20px 0 0 0',
-            color: 'white'
+            color: '#6c757d',
           }}>
             Don't have an Account?
             <span
