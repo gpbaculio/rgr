@@ -10,9 +10,7 @@ const GraphQLUserType = new GraphQLObjectType({
   fields: () => ({
     id: globalIdField('User'), // will receive id field from the resolved root
     displayName: {
-      name: 'displayName',
       type:  GraphQLString,
-      description: 'A users\' chosen display name',
       resolve: ({ displayName }) => displayName
     },
   })

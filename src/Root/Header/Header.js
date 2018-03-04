@@ -1,24 +1,25 @@
 import React from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, Link } from 'react-router-dom';
 import './style.css';
 
 class Header extends React.Component {
   render() {
+    const authorized = localStorage.getItem('token')
     return (
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">HighOutput</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <a className="navbar-brand" href="#">HighOutput</a>
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav mr-auto">
-            <li className="nav-item active">
+        <div className="collapse navbar-collapse" id="navbarText">
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item">
               <NavLink
                 to="/home"
                 activeClassName="active"
                 className="nav-link"
               >
-                <i class="fa fa-home"/>
+                <i className="fa fa-home"/>
                 Home
               </NavLink>
             </li>
@@ -28,7 +29,7 @@ class Header extends React.Component {
                 activeClassName="active"
                 className="nav-link"
               >
-                <i class="fa fa-user-circle-o"/>
+                <i className="fa fa-user-circle-o"/>
                 Profile
               </NavLink>
             </li>
@@ -38,8 +39,8 @@ class Header extends React.Component {
                 activeClassName="active"
                 className="nav-link"
               >
-                <i class="fa fa-envelope-o" aria-hidden="true"/>
-                messages
+                <i className="fa fa-envelope-o" aria-hidden="true"/>
+                Messages
               </NavLink>
             </li>
             <li className="nav-item">
@@ -48,14 +49,28 @@ class Header extends React.Component {
                 activeClassName="active"
                 className="nav-link"
               >
-                <i class="fa fa-bell-o"></i>
+                <i className="fa fa-bell-o"></i>
                 Notifications
               </NavLink>
             </li>
           </ul>
-          <span class="navbar-text">
-            Logout
-          </span>
+            {authorized ?
+              <div className='ml1 pointer black' onClick={() => {
+                localStorage.removeItem('token')
+                this.props.history.push('login')
+              }}>Logout</div>
+              :
+              <NavLink
+                to="/login"
+                activeClassName="active"
+                className="nav-link"
+              >
+                <span className="navbar-text">
+                  <i className="fa fa-key"/>
+                  Login
+                </span>
+              </NavLink>
+            }
         </div>
       </nav>
     );

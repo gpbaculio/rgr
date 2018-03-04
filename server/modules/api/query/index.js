@@ -1,24 +1,18 @@
 // external imports
-import { GraphQLObjectType } from 'graphql'
+import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { globalIdField } from 'graphql-relay'
 // local imports
-import { GraphQLUserType } from './objectTypes'
-import { nodeField } from '../definitions'
-import { getUser } from '../../database'
+import { GraphQLUserType } from './objectTypes';
 
 const query = new GraphQLObjectType({
   name: 'Query',
-  fields: {
+  fields: () => ({
     viewer: {
       type: GraphQLUserType,
-      resolve: (_root, _args, context) => {
-        console.log('context = ', context);
-        const { user } = context;
-        console.log('context user = ', user);
-        return getUser(user.id);
-      }
-    },
-    node: nodeField
-  }
-})
+      resolve: async(root, args) => 'asdsdasd',
+      // it's important to have function to get user from Db.
+    }
+  })
+});
 
 export default query

@@ -22,7 +22,7 @@ const GraphQLUserRegistrationMutation = mutationWithClientMutationId({
     const user = await User.findOne({
       email: email.toLowerCase()
     });
-    if (!user) {
+    if (user) {
       return ({token: null, error: 'EMAIL_ALREADY_IN_USE'});
     }
     const newUser = new User({displayName, email, password});

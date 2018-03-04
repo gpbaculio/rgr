@@ -4,7 +4,7 @@ import { GraphQLObjectType } from 'graphql'
 import userRegistration from './userRegistration'
 import userLogin from './userLogin'
 
-const mutation = new GraphQLObjectType({
+const mutations = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     userRegistration,
@@ -12,4 +12,4 @@ const mutation = new GraphQLObjectType({
   }
 })
 
-export default mutation
+export default mutations
