@@ -1,2 +1,1 @@
-export {default}
-from './Profile';
+export { default } from './ProfileRenderer';

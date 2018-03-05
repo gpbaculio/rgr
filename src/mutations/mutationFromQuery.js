@@ -1,7 +1,7 @@
 // external imports
 import { commitMutation } from 'react-relay'
 // local imports
-import env from '../relayEnv'
+import env from '../Root/relayEnv'
 
 const mutationFromQuery = query => (input, callbacks) => ({
   commit(configs) {

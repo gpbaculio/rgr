@@ -1,18 +1,34 @@
 // external imports
 import { GraphQLObjectType, GraphQLString } from 'graphql'
-import { globalIdField } from 'graphql-relay'
-// local import
-// import { MemberConnectionType, MessageConnectionType } from './'
-// import { getMessageList, getMemberList } from '../memoryDb'
+import { globalIdField, connectionArgs, connectionFromArray, connectionDefinitions } from 'graphql-relay'
+
+import {getAllTodosByViewer} from '../../../database'
+import GraphQLTodoType from './todo';
+
+export const {
+  connectionType: allTodosByViewerConnection,
+  edgeType: GraphQLTodoEdge
+} = connectionDefinitions({name: 'Todo', nodeType: GraphQLTodoType});
 
 const GraphQLUserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: globalIdField('User'), // will receive id field from the resolved root
+    id: globalIdField('User'),
     displayName: {
       type:  GraphQLString,
       resolve: ({ displayName }) => displayName
     },
+    allTodosByViewer: {
+      type: allTodosByViewerConnection,
+      args: {
+        ...connectionArgs,
+      },
+      resolve: async(_root, { ...args }, { user }) => {
+        const allTodosByViewer = await getAllTodosByViewer(user._id);
+        console.log('allTodosByViewer = ', allTodosByViewer);
+        return connectionFromArray(allTodosByViewer, args)
+      }
+    }
   })
 })
 

@@ -19,6 +19,7 @@ const GraphQLUserLoginMutation = mutationWithClientMutationId({
     const user = await User.findOne({
       email: email.toLowerCase()
     });
+    console.log('user id = ', user.id);
     if (!user) {
       return ({token: null, error: 'INVALID_EMAIL_PASSWORD'});
     }

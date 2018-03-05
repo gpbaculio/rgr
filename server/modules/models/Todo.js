@@ -5,7 +5,8 @@ const TodoSchema = new mongoose.Schema({
     type: String
   },
   complete: {
-    type: Boolean
+    type: Boolean,
+    default: false,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
