@@ -18,8 +18,9 @@ class Profile extends React.Component {
   }
 
   _createTodo = (e) => {
+    console.log('createTodo fired!');
     e.preventDefault();
-    const { newTodoText } = this.state;
+    const { newTodoText: text } = this.state;
     const { viewer } = this.props;
     const { id: userId } = viewer; // userId is owner of the todo
     this.setState({ createClicked: true });
@@ -29,23 +30,24 @@ class Profile extends React.Component {
         userProxy,
         'Profile_allTodosByViewer',
       );
-      ConnectionHandler.insertEdgeAfter(conn, newEdge);
+      ConnectionHandler.insertEdgeBefore(conn, newEdge);
     }
     const mutation = createTodoMutation(
-      { newTodoText, userId },
+      { text, userId },
       {
-        onSuccess: () => this.setState({ createClicked: false }),
-        onError: () => this.setState({ createClicked: false }),
+        onSuccess: () => this.setState({ createClicked: false, newTodoText: '' }),
+        onError: () => this.setState({ createClicked: false, newTodoText: '' }),
         updater: (store) => {
-          const payload = store.getRootField('addTodo'); // payload from the mutation name
+          const payload = store.getRootField('createTodo'); // payload from the mutation name
           const newEdge = payload.getLinkedRecord('todoEdge'); // the new todo added
           sharedUpdater(store, viewer, newEdge);
         },
         optimisticUpdater: (store) => {
           const id = `${v1()}`;
           const node = store.create(id, 'Todo');
-            node.setValue(newTodoText, 'text');
+            node.setValue(text, 'text');
             node.setValue(id, 'id');
+            node.setValue(false, 'complete');
           const newEdge = store.create(
             `client:newEdge:${v1()}`,
             'TodoEdge',
@@ -56,10 +58,25 @@ class Profile extends React.Component {
       },
     );
     mutation.commit()
+    this.setState({ newTodoText: '' })
   }
+  handleInputChange = e => this.setState({ newTodoText: e.target.value });
   render() {
     return (
-      <div>Profile!</div>
+      <div>
+        {this.props.viewer.displayName}
+        <form onSubmit={this._createTodo}>
+          <input type="text" value={this.state.newTodoText} onChange={this.handleInputChange} />
+        </form>
+        <ul>
+          {this.props.viewer.allTodosByViewer.edges.map(({node}) => (
+            <li key={node.id}>
+              1. title: {node.text} &nbsp; 
+              2. complete: {`${node.complete}`}
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   }
 

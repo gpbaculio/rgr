@@ -44,8 +44,8 @@ export async function getTodo(todoId) {
 
 export async function getUser(userId) {
   try {
-    const user = await User.findById({ id: userId });
-    console.log('getUser found! = ', getUser);
+    const user = await User.findOne({_id: userId});
+    console.log('getUser found! = ', user);
     return user;
   } catch (e) {
     console.log(`FAILED to RETRIEVE USER id ${userId} = `, e);
