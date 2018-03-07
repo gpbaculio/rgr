@@ -1,8 +1,9 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql';
-
 import { mutationWithClientMutationId, offsetToCursor, fromGlobalId } from 'graphql-relay';
+//local imports
+import pubSub from '../../../pubSub';
 import {createTodo} from '../../database';
-import { GraphQLTodoEdge } from '../query/objectTypes/user'; // connection defined on user
+import { GraphQLTodoEdge } from '../query/objectTypes'; // connection defined on user
 
 const GraphQLCreateTodoMutation = mutationWithClientMutationId({
   name: 'CreateTodo',
@@ -11,19 +12,26 @@ const GraphQLCreateTodoMutation = mutationWithClientMutationId({
     userId: { type: new GraphQLNonNull(GraphQLString) },
   },
   mutateAndGetPayload: async({text, userId}) => {
-    const {id} = fromGlobalId(userId); // userId is a relay id, id is id from db
-    console.log('id = ', id);
-    const newTodo = await createTodo(text, id);
-    return ({ newTodo });
+    // userId is a relay id, id is id from db
+    const newTodo = await createTodo(text, fromGlobalId(userId).id);
+    pubSub.publish(
+      'todoAdded', {
+        todoAdded: {
+          newTodo
+        }
+      }
+    );
+    return ({ todo: newTodo });
   },
   outputFields: {
-    todoEdge: {
+    todo: {
       type: GraphQLTodoEdge,
-      resolve: async({newTodo}) => ({
-        cursor: offsetToCursor(newTodo._id),
-        node: newTodo
+      resolve: ({todo}) => ({
+        cursor: offsetToCursor(todo.id),
+        node: todo
       }),
     }
   },
 });
+
 export default GraphQLCreateTodoMutation;

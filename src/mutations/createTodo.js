@@ -7,7 +7,7 @@ import mutationFromQuery from './mutationFromQuery'
 export default mutationFromQuery(graphql`
 mutation createTodoMutation($input: CreateTodoInput!) {
   createTodo(input:$input) {
-    todoEdge {
+    todo {
       __typename
       cursor
       node {

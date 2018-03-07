@@ -34,7 +34,7 @@ const fetchQuery = (operation, variables) => {
 
 const setupSubscription = (config, variables, cacheConfig, observer) => {
   const query = config.text
-  const subscriptionClient = new SubscriptionClient('ws://localhost:8080/subscriptions', {reconnect: true})
+  const subscriptionClient = new SubscriptionClient('ws://localhost:4000/subscriptions', {reconnect: true})
   console.log("subscriptionClient = ", subscriptionClient)
   const onNext = (result) => {
     observer.onNext(result)

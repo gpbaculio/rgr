@@ -32,6 +32,16 @@ export async function getAllTodosByViewer(userId) { // by default, status = 'any
   }
 }
 
+export async function getPublicTodos() {
+  try {
+    const publicTodos = await Todo.find({}).populate('userId').sort({createdAt: 'descending'}); // so we can see the latest todo added
+    console.log('publicTodos = ', publicTodos);
+    return publicTodos;
+  } catch (e) {
+    console.log('FAILED to RETRIEVE PUBLIC TODOS = ', e)
+  }
+}
+
 export async function getTodo(todoId) {
   try {
     const todo = await Todo.findOne({ id: todoId }).populate('userId');

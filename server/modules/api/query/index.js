@@ -11,7 +11,6 @@ const query = new GraphQLObjectType({
     viewer: {
       type: GraphQLUserType,
       resolve: async(_root, _args, {user}) => {
-        console.log('user context = ', user);
         if(user){
           return getUser(user._id)
         }

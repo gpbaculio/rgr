@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, withRouter, Link } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import './style.css';
 
 class Header extends React.Component {
@@ -7,7 +7,7 @@ class Header extends React.Component {
     const authorized = localStorage.getItem('token')
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="#">HighOutput</a>
+        <a className="navbar-brand" href="/">HighOutput</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>

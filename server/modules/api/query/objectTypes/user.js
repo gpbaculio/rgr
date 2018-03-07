@@ -2,11 +2,11 @@
 import { GraphQLObjectType, GraphQLString } from 'graphql'
 import { globalIdField, connectionArgs, connectionFromArray, connectionDefinitions } from 'graphql-relay'
 
-import {getAllTodosByViewer} from '../../../database'
+import {getAllTodosByViewer, getPublicTodos} from '../../../database'
 import GraphQLTodoType from './todo';
 
 export const {
-  connectionType: allTodosByViewerConnection,
+  connectionType: todosConnection,
   edgeType: GraphQLTodoEdge
 } = connectionDefinitions({name: 'Todo', nodeType: GraphQLTodoType});
 
@@ -19,14 +19,23 @@ const GraphQLUserType = new GraphQLObjectType({
       resolve: ({ displayName }) => displayName
     },
     allTodosByViewer: {
-      type: allTodosByViewerConnection,
+      type: todosConnection,
       args: {
         ...connectionArgs,
       },
       resolve: async(_root, { ...args }, { user }) => {
         const allTodosByViewer = await getAllTodosByViewer(user._id);
-        console.log('allTodosByViewer = ', allTodosByViewer);
         return connectionFromArray(allTodosByViewer, args)
+      }
+    },
+    publicTodos: {
+      type: todosConnection,
+      args: {
+        ...connectionArgs,
+      },
+      resolve: async(_root, { ...args }, { user }) => {
+        const publicTodos = await getPublicTodos();
+        return connectionFromArray(publicTodos, args)
       }
     }
   })

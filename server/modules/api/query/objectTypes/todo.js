@@ -10,11 +10,20 @@ const GraphQLTodo = new GraphQLObjectType({
     id: globalIdField('Todo'),
     text: {
       type: GraphQLString,
-      resolve: (obj) => obj.text,
+      resolve: ({text}) => text,
     },
     complete: {
       type: GraphQLBoolean,
-      resolve: (obj) => obj.complete,
+      resolve: ({complete}) => complete,
+    },
+    owner: {
+      type: GraphQLString,
+      resolve: (root) => {
+        if(typeof root.userId !== 'undefined') {
+          return root.userId.displayName; // displayName of the ownder of todo 
+        }
+        return null;
+      },
     },
   },
   interfaces: [nodeInterface],

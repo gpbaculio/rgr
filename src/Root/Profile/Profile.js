@@ -18,7 +18,6 @@ class Profile extends React.Component {
   }
 
   _createTodo = (e) => {
-    console.log('createTodo fired!');
     e.preventDefault();
     const { newTodoText: text } = this.state;
     const { viewer } = this.props;
@@ -39,7 +38,7 @@ class Profile extends React.Component {
         onError: () => this.setState({ createClicked: false, newTodoText: '' }),
         updater: (store) => {
           const payload = store.getRootField('createTodo'); // payload from the mutation name
-          const newEdge = payload.getLinkedRecord('todoEdge'); // the new todo added
+          const newEdge = payload.getLinkedRecord('todo'); // the new todo added
           sharedUpdater(store, viewer, newEdge);
         },
         optimisticUpdater: (store) => {
@@ -50,7 +49,7 @@ class Profile extends React.Component {
             node.setValue(false, 'complete');
           const newEdge = store.create(
             `client:newEdge:${v1()}`,
-            'TodoEdge',
+            'Todo',
           );
             newEdge.setLinkedRecord(node, 'node');
           sharedUpdater(store, viewer, newEdge);
