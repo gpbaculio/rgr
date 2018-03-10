@@ -14,6 +14,7 @@ mutation createTodoMutation($input: CreateTodoInput!) {
         complete
         id
         text
+        owner
       }
     }
   }

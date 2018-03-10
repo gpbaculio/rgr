@@ -3,8 +3,9 @@ import User from './models/User';
 
 export async function createTodo(text, userId) {
   try {
-    const newTodo = new Todo({ text, userId });
-    await newTodo.save();
+    let newTodo = new Todo({ text, userId });
+      await newTodo.save();
+      newTodo = Todo.findOne({ _id: newTodo._id }).populate('userId');
     return newTodo;
   } catch (e) {
     console.log(`FAILED to CREATE TODO ${text} = `, e);

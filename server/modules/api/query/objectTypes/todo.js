@@ -19,6 +19,7 @@ const GraphQLTodo = new GraphQLObjectType({
     owner: {
       type: GraphQLString,
       resolve: (root) => {
+        console.log('owner root = ', root);
         if(typeof root.userId !== 'undefined') {
           return root.userId.displayName; // displayName of the ownder of todo 
         }

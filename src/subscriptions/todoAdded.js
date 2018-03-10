@@ -11,6 +11,7 @@ export default subscriptionFromQuery(graphql`
           id
           text
           complete
+          owner
         }
       }
     }
