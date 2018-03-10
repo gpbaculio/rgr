@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
 import { mutationWithClientMutationId, offsetToCursor, fromGlobalId } from 'graphql-relay';
 //local imports
 import pubSub from '../../../pubSub';
@@ -11,9 +11,9 @@ const GraphQLCreateTodoMutation = mutationWithClientMutationId({
     text: { type: new GraphQLNonNull(GraphQLString) },
     userId: { type: new GraphQLNonNull(GraphQLString) },
   },
-  mutateAndGetPayload: async({text, userId}) => {
+  mutateAndGetPayload: async({text, userId, transactionId}) => {
     // userId is a relay id, id is id from db
-    const newTodo = await createTodo(text, fromGlobalId(userId).id);
+    const newTodo = await createTodo(text, fromGlobalId(userId).id, transactionId);
     pubSub.publish(
       'todoAdded', {
         todoAdded: {
@@ -21,7 +21,9 @@ const GraphQLCreateTodoMutation = mutationWithClientMutationId({
         }
       }
     );
-    return ({ todo: newTodo });
+    return ({
+      todo: newTodo
+    });
   },
   outputFields: {
     todo: {

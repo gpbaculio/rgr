@@ -5,14 +5,13 @@ import TodoAddedSubscription from '../../subscriptions/todoAdded';
 import './style.css';
 
 class Home extends React.Component {
+  subscribe = TodoAddedSubscription({}, {
+    onCompleted: () => console.log('Successful subscription completed'),
+    onError: transaction => console.log('subscription failed', transaction),
+    onNext: response => console.log('subscription response = ', response)
+  })
   componentDidMount() {
-    const subscription = TodoAddedSubscription({}, {
-      onCompleted: () => console.log('Successful subscription completed'),
-      onError: transaction => console.log('subscription failed', transaction),
-      onNext: response => console.log('subscription response = ', response)
-    })
-
-    subscription.commit([
+    this.subscription = this.subscribe.commit([
       {
         type: 'RANGE_ADD',
         parentID: this.props.viewer.id,
@@ -25,6 +24,10 @@ class Home extends React.Component {
         edgeName: 'todo'
       }
     ])
+  }
+  componentWillUnmount() {
+    console.log('Home unmounted!')
+    this.subscription.dispose()
   }
   render() {
     return (
