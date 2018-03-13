@@ -8,12 +8,9 @@ export async function getUser(token) {
   }
   try {
     const decodedToken = jwt.verify(token.substring(7), jwtSecret);
-    console.log('decodedToken.id = ', decodedToken.id);
     const user = await User.findOne({_id: decodedToken.id});
-    console.log('getUser auth = ', user);
     return ({user});
   } catch (err) {
-    console.log('user = false');
     return ({user: null});
   }
 }

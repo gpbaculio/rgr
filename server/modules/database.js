@@ -85,7 +85,28 @@ export async function renameTodo(todoId, text, prevText) {
     return null;
   }
 }
-
+export async function likeTodo(todoId, text, prevText) {
+  try {
+    const todo = await Todo.findOne({_id: todoId});// find the todo and get the fields
+    const updatedTodo = await Todo.findOneAndUpdate(
+      {
+        _id: todoId
+      },
+      {
+        $set: {
+          text: text
+        }
+      },
+      {
+        new: true
+      },
+    );
+    return updatedTodo;
+  } catch (e) {
+    console.log(`FAILED to RENAME todo id ${todoId} = `, e);
+    return null;
+  }
+}
 export async function toggleTodoStatus(todoId, status, text) {
   try {
     const updatedTodo = await Todo.findOneAndUpdate(

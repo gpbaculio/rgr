@@ -11,7 +11,6 @@ const TodoAddedPayloadType = new GraphQLObjectType({
     todo: {
       type: GraphQLTodoEdge,
       resolve: ({ newTodo }) => {
-        console.log('newTodo = ', newTodo);
         return ({
           cursor: offsetToCursor(newTodo.id),
           node: newTodo

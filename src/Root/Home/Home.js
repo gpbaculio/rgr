@@ -26,7 +26,6 @@ class Home extends React.Component {
     ])
   }
   componentWillUnmount() {
-    console.log('Home unmounted!')
     this.subscription.dispose()
   }
   render() {
@@ -41,6 +40,7 @@ class Home extends React.Component {
                 owner: {node.owner} &nbsp;
                 text: {node.text} &nbsp;
                 compelete: {`${node.complete}`} &nbsp; 
+                likes: 123 &nbsp; 
               </li>
             )
           })}
