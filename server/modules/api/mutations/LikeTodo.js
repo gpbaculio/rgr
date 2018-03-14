@@ -2,27 +2,27 @@ import { GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
 import { mutationWithClientMutationId, offsetToCursor, fromGlobalId } from 'graphql-relay';
 //local imports
 import pubSub from '../../../pubSub';
-import {createTodo} from '../../database';
+import { likeTodo } from '../../database';
 import { GraphQLTodoEdge } from '../query/objectTypes'; // connection defined on user
 
-const GraphQLCreateTodoMutation = mutationWithClientMutationId({
-  name: 'CreateTodo',
+const GraphQLLikeTodoMutation = mutationWithClientMutationId({
+  name: 'LikeTodo',
   inputFields: {
-    text: { type: new GraphQLNonNull(GraphQLString) },
+    todoId: { type: new GraphQLNonNull(GraphQLString) },
     userId: { type: new GraphQLNonNull(GraphQLString) },
   },
-  mutateAndGetPayload: async({text, userId}) => {
+  mutateAndGetPayload: async({todoId, userId}) => {
     // userId is a relay id, id is id from db
-    const newTodo = await createTodo(text, fromGlobalId(userId).id);
+    const todoLiked = await likeTodo(fromGlobalId(todoId).id, fromGlobalId(userId).id);
     pubSub.publish(
-      'todoAdded', {
-        todoAdded: {
-          newTodo
+      'todoLiked', {
+        todoLiked: {
+          todoLiked
         }
       }
     );
     return ({
-      todo: newTodo
+      todo: likeTodo
     });
   },
   outputFields: {
@@ -36,4 +36,4 @@ const GraphQLCreateTodoMutation = mutationWithClientMutationId({
   },
 });
 
-export default GraphQLCreateTodoMutation;
+export default GraphQLLikeTodoMutation;

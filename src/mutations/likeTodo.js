@@ -5,8 +5,8 @@ import { graphql } from 'react-relay'
 import mutationFromQuery from './mutationFromQuery'
 
 export default mutationFromQuery(graphql`
-mutation createTodoMutation($input: CreateTodoInput!) {
-  createTodo(input:$input) {
+mutation likeTodoMutation($input: LikeTodoInput!) {
+  likeTodo(input:$input) {
     todo {
       __typename
       cursor

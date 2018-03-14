@@ -4,8 +4,8 @@ import { graphql } from 'react-relay'
 import subscriptionFromQuery from './subscriptionFromQuery'
 
 export default subscriptionFromQuery(graphql`
-  subscription todoAddedSubscription {
-    todoAdded {
+  subscription todoLikedSubscription {
+    todoLiked {
       todo {
         node {
           id

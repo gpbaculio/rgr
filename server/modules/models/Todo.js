@@ -14,9 +14,9 @@ const TodoSchema = new mongoose.Schema({
   },
   likes: {
     type: Number,
-    ref: 'User'
+    ref: 'User',
   },
-  userIdslikes: [{ type : mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  likersUserId: [{ type : mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, {
   timestamps: {
     createdAt: 'createdAt',

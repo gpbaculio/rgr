@@ -85,21 +85,26 @@ export async function renameTodo(todoId, text, prevText) {
     return null;
   }
 }
-export async function likeTodo(todoId, text, prevText) {
+export async function likeTodo(todoId, userId) {
   try {
-    const todo = await Todo.findOne({_id: todoId});// find the todo and get the fields
+    const todo = await Todo.findOne({_id: todoId});
+    let updatedLikersUserId, updatedLikes;
+    if (todo.likersUserId.includes(userId)) {
+      updatedLikersUserId = todo.likersUserId.filter( id => id !== userId);
+      updatedLikes = todo.likes - 1;
+    } else if (!todo.likersUserId.includes(userId)) {
+      updatedLikersUserId = [...todo.likersUserId, userId];
+      updatedLikes = todo.likes + 1;
+    }
     const updatedTodo = await Todo.findOneAndUpdate(
-      {
-        _id: todoId
-      },
-      {
+      { _id: todoId },
+      { 
         $set: {
-          text: text
+          likersUserId: updatedLikersUserId,
+          likes: updatedLikes,
         }
       },
-      {
-        new: true
-      },
+      { new: true }
     );
     return updatedTodo;
   } catch (e) {
