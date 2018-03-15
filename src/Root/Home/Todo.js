@@ -30,8 +30,7 @@ class Todo extends Component {
             const value = todoNode.getValue(field);
             console.log('value = ', value);
             todoProxy.setValue(value, field)
-          })
-          console.log('todoProxy = ', todoProxy);
+          });
         },
         optimisticResponse: () => {
           const userIdinDb = fromGlobalId(clientUserId).id
@@ -49,9 +48,6 @@ class Todo extends Component {
       },
     );
     mutation.commit()
-  }
-  componentWillUnmount() {
-    this.todoLikedubscription.dispose()
   }
   render() {
     const { todo, viewer } = this.props;

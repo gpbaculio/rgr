@@ -24,15 +24,26 @@ class Home extends React.Component {
     onError: transaction => console.log('todoLiked subscription failed', transaction),
     onNext: response => console.log('todoLiked subscription response = ', response),
     updater: store => {
-      const subscriptionPayload = store.getRootField('todoLiked');
-      const subscribedTodoEdge = subscriptionPayload.getLinkedRecord('todo');
-      const todoRecordFromStore = store.get(subscribedTodoEdge.id); 
-      todoFields.forEach(field => {
-        todoRecordFromStore.setValue(
-          subscribedTodoEdge[field],
-          field,
-        );
-      })
+      const todoFieldsToUpdate = [
+        'text',
+        'complete',
+        'owner',
+        'likes',
+        'likersUserId',
+      ];
+      console.log('typeof = ',store.getRootField())
+      if(typeof store.getRootField('todoLiked') === 'undefined') {
+        return;
+      }
+      const likeTodoPayload = store.getRootField('todoLiked'); // payload from the mutation name
+        const todoEdge = likeTodoPayload.getLinkedRecord('todo'); // the new todo added
+        const todoNode = todoEdge.getLinkedRecord('node');
+      const todoProxy = store.get(todoNode.getValue('id'))
+      todoFieldsToUpdate.forEach(field => {
+        const value = todoNode.getValue(field);
+        console.log('subscription value = ', value);
+        todoProxy.setValue(value, field)
+      });
     }
   })
   subscribeTodoAdded = TodoAddedSubscription({}, {
@@ -54,10 +65,11 @@ class Home extends React.Component {
         edgeName: 'todo'
       }
     ])
-    this.todoLikedubscription = this.subscribeTodoLiked.commit()
+    this.todoLikedsubscription = this.subscribeTodoLiked.commit()
   }
   componentWillUnmount() {
     this.todoAddedubscription.dispose()
+    this.todoLikedsubscription.dispose()
   }
   render() {
     const { viewer } = this.props;
