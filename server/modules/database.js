@@ -107,7 +107,7 @@ export async function likeTodo(todoId, userId) {
         }
       },
       { new: true }
-    );
+    ).populate('userId');
     console.log('updatedTodo = ', updatedTodo);
     return updatedTodo;
   } catch (e) {

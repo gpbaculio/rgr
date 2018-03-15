@@ -4,14 +4,6 @@ import { fromGlobalId } from 'graphql-relay';
 
 import likeTodoMutation from '../../mutations/likeTodo';
 
-const todoFields = [
-  'text',
-  'complete',
-  'owner',
-  'likes',
-  'likersUserId',
-];
-
 class Todo extends Component {
   _likeTodo = (e) => {
     e.preventDefault();
@@ -23,18 +15,23 @@ class Todo extends Component {
         onSuccess: () => console.log('like mutation successful'),
         onError: e => console.log('like mutation failed = ', e),
         updater: store => {
+          const todoFieldsToUpdate = [
+            'text',
+            'complete',
+            'owner',
+            'likes',
+            'likersUserId',
+          ];
           const likeTodoPayload = store.getRootField('likeTodo'); // payload from the mutation name
-            console.log('likeTodoPayload = ', likeTodoPayload);
-          const todoEdge = likeTodoPayload.getLinkedRecord('todo'); // the new todo added
-            console.log('todoEdge = ', todoEdge);
-          const todoRecordFromStore = store.get(todoEdge.id);
-            console.log('todoRecordFromStore = ', todoRecordFromStore);
-          todoFields.forEach(field => {
-            todoRecordFromStore.setValue(
-              todoEdge[field],
-              field,
-            );
+            const todoEdge = likeTodoPayload.getLinkedRecord('todo'); // the new todo added
+            const todoNode = todoEdge.getLinkedRecord('node');
+          const todoProxy = store.get(todo.id)
+          todoFieldsToUpdate.forEach(field => {
+            const value = todoNode.getValue(field);
+            console.log('value = ', value);
+            todoProxy.setValue(value, field)
           })
+          console.log('todoProxy = ', todoProxy);
         },
         optimisticResponse: () => {
           const userIdinDb = fromGlobalId(clientUserId).id
