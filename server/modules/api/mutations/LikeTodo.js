@@ -13,7 +13,9 @@ const GraphQLLikeTodoMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async({todoId, userId}) => {
     // userId is a relay id, id is id from db
-    const todoLiked = await likeTodo(fromGlobalId(todoId).id, fromGlobalId(userId).id);
+    console.log('todoId = ', todoId);
+    console.log('userId = ', userId);
+    const todoLiked = await likeTodo(todoId, userId);
     pubSub.publish(
       'todoLiked', {
         todoLiked: {
@@ -22,7 +24,7 @@ const GraphQLLikeTodoMutation = mutationWithClientMutationId({
       }
     );
     return ({
-      todo: likeTodo
+      todo: todoLiked
     });
   },
   outputFields: {

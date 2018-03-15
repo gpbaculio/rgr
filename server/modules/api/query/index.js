@@ -4,7 +4,7 @@ import { globalIdField } from 'graphql-relay'
 // local imports
 import { GraphQLUserType } from './objectTypes';
 import { getUser } from '../../database';
-
+import { nodeField } from '../definitions'
 const query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
@@ -16,7 +16,8 @@ const query = new GraphQLObjectType({
         }
         return null;
       },
-    }
+    },
+    node: nodeField,
   })
 });
 

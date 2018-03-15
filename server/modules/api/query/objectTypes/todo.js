@@ -1,5 +1,5 @@
 // external imports
-import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLList} from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLList, GraphQLInt } from 'graphql'
 import { globalIdField } from 'graphql-relay'
 
 import { nodeInterface } from '../../definitions';
@@ -17,7 +17,7 @@ const GraphQLTodo = new GraphQLObjectType({
       resolve: ({complete}) => complete,
     },
     likes : {
-      type: GraphQLBoolean,
+      type: GraphQLInt,
       resolve: ({likes}) => likes,
     },
     likersUserId : {

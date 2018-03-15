@@ -4,6 +4,7 @@ import { globalIdField, connectionArgs, connectionFromArray, connectionDefinitio
 
 import {getAllTodosByViewer, getPublicTodos} from '../../../database'
 import GraphQLTodoType from './todo';
+import { nodeInterface } from '../../definitions'
 
 export const {
   connectionType: todosConnection,
@@ -12,6 +13,7 @@ export const {
 
 const GraphQLUserType = new GraphQLObjectType({
   name: 'User',
+  interfaces: [nodeInterface],
   fields: () => ({
     id: globalIdField('User'),
     displayName: {

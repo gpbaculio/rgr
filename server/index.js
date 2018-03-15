@@ -7,26 +7,17 @@ import {SubscriptionServer} from 'subscriptions-transport-ws';
 import {execute, subscribe} from 'graphql';
 import bluebird from 'bluebird';
 
-
 import schema from './modules/api/schema'
 import {getUser} from './modules/auth'
+
+require('events').EventEmitter.defaultMaxListeners = 0
 
 mongoose.Promise = bluebird;
 mongoose.connect(
   'mongodb://iamglenbacs:highoutput2017@ds127126.mlab.com:27126/gpb-relay-todos-advance', 
   {
-    server: {
-      socketOptions: {
-        keepAlive: 300000,
-        connectTimeoutMS: 30000
-      }
-    },
-    replset: {
-      socketOptions: {
-        keepAlive: 300000,
-        connectTimeoutMS: 30000
-      }
-    }
+    server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+    replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }
   }
 );
 
@@ -54,7 +45,10 @@ app.use('/graphql', graphqlExpress(async(req,res,next) => {
     }
   })
 }))
-app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql', subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`}))
+app.use('/graphiql', graphiqlExpress({
+  endpointURL: '/graphql',
+  subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`
+}))
 
 app.get('/*', function (_, res) {
   res.sendFile(indexPath)

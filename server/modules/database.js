@@ -45,7 +45,8 @@ export async function getPublicTodos() {
 
 export async function getTodo(todoId) {
   try {
-    const todo = await Todo.findOne({ id: todoId }).populate('userId');
+    const todo = await Todo.findOne({ _id: todoId }).populate('userId');
+    console.log('todo found! node = ', todo)
     return todo;
   } catch (e) {
     console.log(`FAILED to RETRIEVE TODO id ${todoId} = `, e);
@@ -88,7 +89,8 @@ export async function renameTodo(todoId, text, prevText) {
 export async function likeTodo(todoId, userId) {
   try {
     const todo = await Todo.findOne({_id: todoId});
-    let updatedLikersUserId, updatedLikes;
+    console.log('todofound! liketodo = ', todo);
+    var updatedLikersUserId, updatedLikes;
     if (todo.likersUserId.includes(userId)) {
       updatedLikersUserId = todo.likersUserId.filter( id => id !== userId);
       updatedLikes = todo.likes - 1;
@@ -106,6 +108,7 @@ export async function likeTodo(todoId, userId) {
       },
       { new: true }
     );
+    console.log('updatedTodo = ', updatedTodo);
     return updatedTodo;
   } catch (e) {
     console.log(`FAILED to RENAME todo id ${todoId} = `, e);

@@ -14,7 +14,7 @@ const TodoSchema = new mongoose.Schema({
   },
   likes: {
     type: Number,
-    ref: 'User',
+    default: 0
   },
   likersUserId: [{ type : mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, {
