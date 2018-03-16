@@ -16,6 +16,7 @@ const GraphQLLikeTodoMutation = mutationWithClientMutationId({
     console.log('todoId = ', todoId);
     console.log('userId = ', userId);
     const todoLiked = await likeTodo(todoId, userId);
+    console.log('todoLiked = ', todoLiked)
     pubSub.publish(
       'todoLiked', {
         todoLiked: {

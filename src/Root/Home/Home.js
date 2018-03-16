@@ -7,7 +7,7 @@ import './style.css';
 
 // local imports
 import TodoAddedSubscription from '../../subscriptions/todoAdded';
-import TodoLikedSubscription from '../../subscriptions/todoAdded';
+import TodoLikedSubscription from '../../subscriptions/todoLiked';
 
 const todoFields = [
   'text',
@@ -20,9 +20,6 @@ const todoFields = [
 class Home extends React.Component {
   //subscriptions
   subscribeTodoLiked = TodoLikedSubscription({}, {
-    onCompleted: () => console.log('todoLiked Successful subscription completed'),
-    onError: transaction => console.log('todoLiked subscription failed', transaction),
-    onNext: response => console.log('todoLiked subscription response = ', response),
     updater: store => {
       const todoFieldsToUpdate = [
         'text',
@@ -31,26 +28,17 @@ class Home extends React.Component {
         'likes',
         'likersUserId',
       ];
-      console.log('typeof = ',store.getRootField())
-      if(typeof store.getRootField('todoLiked') === 'undefined') {
-        return;
-      }
-      const likeTodoPayload = store.getRootField('todoLiked'); // payload from the mutation name
+        const likeTodoPayload = store.getRootField('todoLiked'); // payload from the mutation name
         const todoEdge = likeTodoPayload.getLinkedRecord('todo'); // the new todo added
         const todoNode = todoEdge.getLinkedRecord('node');
-      const todoProxy = store.get(todoNode.getValue('id'))
-      todoFieldsToUpdate.forEach(field => {
-        const value = todoNode.getValue(field);
-        console.log('subscription value = ', value);
-        todoProxy.setValue(value, field)
-      });
+        const todoProxy = store.get(todoNode.getValue('id'))
+        todoFieldsToUpdate.forEach(field => {
+          const value = todoNode.getValue(field);
+          todoProxy.setValue(value, field)
+        });
     }
   })
-  subscribeTodoAdded = TodoAddedSubscription({}, {
-    onCompleted: () => console.log('todoAdded Successful subscription completed'),
-    onError: transaction => console.log('todoAdded subscription failed', transaction),
-    onNext: response => console.log('todoAdded subscription response = ', response)
-  })
+  subscribeTodoAdded = TodoAddedSubscription({}, {})
   componentDidMount() {
     this.todoAddedubscription = this.subscribeTodoAdded.commit([
       {

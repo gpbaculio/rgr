@@ -88,28 +88,27 @@ export async function renameTodo(todoId, text, prevText) {
 }
 export async function likeTodo(todoId, userId) {
   try {
-    const todo = await Todo.findOne({_id: todoId});
-    console.log('todofound! liketodo = ', todo);
+    const todo = await Todo.findOne({_id: todoId}); // retrieve todo in db
     var updatedLikersUserId, updatedLikes;
-    if (todo.likersUserId.includes(userId)) {
-      updatedLikersUserId = todo.likersUserId.filter( id => id !== userId);
-      updatedLikes = todo.likes - 1;
-    } else if (!todo.likersUserId.includes(userId)) {
-      updatedLikersUserId = [...todo.likersUserId, userId];
-      updatedLikes = todo.likes + 1;
+    const userLiked = todo.likersUserId.map(id => id.toString()).includes(userId.toString()); // check if user existed on likersUserIdField
+    if (userLiked) { // userId on likersUserId
+      updatedLikersUserId = todo.likersUserId.map(id => id.toString()).filter( id => id !== userId.toString()); // remove userId
+      updatedLikes = Number(todo.likes) - 1; // decrease likes
+    } else if (!userLiked) { // userId not on liked
+      updatedLikersUserId = [...todo.likersUserId.map(id => id.toString()), userId]; // add userId
+      updatedLikes = Number(todo.likes) + 1; // increase likes
     }
     const updatedTodo = await Todo.findOneAndUpdate(
       { _id: todoId },
       { 
-        $set: {
+        $set: { // update fields
           likersUserId: updatedLikersUserId,
           likes: updatedLikes,
         }
       },
-      { new: true }
-    ).populate('userId');
-    console.log('updatedTodo = ', updatedTodo);
-    return updatedTodo;
+      { new: true } // return latest
+    );
+    return await Todo.findOne({_id: updatedTodo._id}).populate('userId');
   } catch (e) {
     console.log(`FAILED to RENAME todo id ${todoId} = `, e);
     return null;

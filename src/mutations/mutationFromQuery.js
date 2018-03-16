@@ -12,6 +12,7 @@ const mutationFromQuery = query => (input, callbacks) => ({
       onCompleted: callbacks.onSuccess,
       updater: callbacks.updater,
       optimisticUpdater: callbacks.optimisticUpdater,
+      optimisticResponse: callbacks.optimisticResponse,
       uploadables: callbacks.uploadables,
       configs
     })
