@@ -86,9 +86,10 @@ export async function renameTodo(todoId, text, prevText) {
     return null;
   }
 }
-export async function likeTodo(todoId, userId) {
+export async function likeTodo(todoId, userId) { // userId is likerId
   try {
-    const todo = await Todo.findOne({_id: todoId}); // retrieve todo in db
+    const todo = await Todo.findOne({_id: todoId}).populate('userId'); // retrieve todo in db
+      console.log('todo = ', todo);
     var updatedLikersUserId, updatedLikes;
     const userLiked = todo.likersUserId.map(id => id.toString()).includes(userId.toString()); // check if user existed on likersUserIdField
     if (userLiked) { // userId on likersUserId
@@ -97,6 +98,22 @@ export async function likeTodo(todoId, userId) {
     } else if (!userLiked) { // userId not on liked
       updatedLikersUserId = [...todo.likersUserId.map(id => id.toString()), userId]; // add userId
       updatedLikes = Number(todo.likes) + 1; // increase likes
+      // user has not liked the todo, let's announce it to the owner of the todo by notification
+      const todoOwner = await User.findOne({ _id: todo.userId._id }) // owner of the todo to notify
+      console.log('todoOwner = ', todoOwner);
+      const userNotified = await User.findOneAndUpdate(
+        { _id: todoOwner._id },
+        {
+          $set: {
+            notifications: [
+              ...todoOwner.notifications,
+              { likerId: userId, todoId, seen: false }
+            ]
+          }
+        },
+        { new: true }
+      );
+      console.log('userNotified = ', userNotified);
     }
     const updatedTodo = await Todo.findOneAndUpdate(
       { _id: todoId },

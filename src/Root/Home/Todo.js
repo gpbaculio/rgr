@@ -6,15 +6,13 @@ import likeTodoMutation from '../../mutations/likeTodo';
 import TodoLikedSubscription from '../../subscriptions/todoAdded';
 
 class Todo extends Component {
-  _likeTodo = (e) => {
+  _likeTodo = e => {
     e.preventDefault();
     const { viewer, todo } = this.props;
     const { id: clientUserId } = viewer; // userId is owner of the todo
     const mutation = likeTodoMutation(
       { todoId: fromGlobalId(todo.id).id, userId: fromGlobalId(clientUserId).id },
       {
-        onSuccess: () => console.log('like mutation successful'),
-        onError: e => console.log('like mutation failed = ', e),
         optimisticUpdater: store => {
           const todoProxy = store.get(todo.id)
           const todoProxyLikes = todoProxy.getValue('likes')
@@ -69,32 +67,6 @@ class Todo extends Component {
     );
   }
 }
-
-// export default createRefetchContainer(
-//   Todo,
-//   graphql`
-//     fragment Todo_todo on Todo {
-//       id
-//       text
-//       complete
-//       owner
-//       likes
-//       likersUserId
-//     }
-//     fragment Todo_viewer on User {
-//       id
-//       displayName
-//     }
-//   `,
-//   graphql`
-//     query TodoRefetchQuery($itemID: String) {
-//       item: node(id: $itemID) {
-//         ...TodoItem_item
-//       }
-//     }
-//   `
-// );
-
 export default createFragmentContainer(
   Todo,
   {

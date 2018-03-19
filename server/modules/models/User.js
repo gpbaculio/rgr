@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     required: false,
     index: true
   },
+  notifications: [{
+    likerId : String,
+    todoId : String,
+    seen: Boolean,
+  }],
   todos: [
     {
       type: mongoose.Schema.Types.ObjectId,

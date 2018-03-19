@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
+import { createFragmentContainer, graphql } from 'react-relay';
 import './style.css';
 
 class Header extends React.Component {
@@ -43,15 +44,28 @@ class Header extends React.Component {
                 Messages
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink
-                to="/notifications"
-                activeClassName="active"
-                className="nav-link"
-              >
-                <i className="fa fa-bell-o"></i>
+            <li className="nav-item dropdown">
+              <span className="nav-link dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Notifications
-              </NavLink>
+              </span>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <span style={{backgroundColor:'#fff !important'}}className="dropdown-item">
+                  <ul style={{overflowY: 'scroll', height: '200px', backgroundColor:'#fff !important'}}>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li>
+                    <li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li>
+                  </ul>
+                </span>
+              </div>
             </li>
           </ul>
             {authorized ?
@@ -82,4 +96,12 @@ class Header extends React.Component {
     );
   }
 }
-export default withRouter(Header)
+
+export default createFragmentContainer(withRouter(Header), {
+  viewer: graphql`
+    fragment Header_viewer on User {
+      id,
+      notifications
+    }
+  `,
+});
