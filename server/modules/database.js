@@ -1,14 +1,30 @@
 import Todo from './models/Todo';
 import User from './models/User';
+import Notification from './models/Notification';
 
 export async function createTodo(text, userId) {
   try {
     let newTodo = new Todo({ text, userId });
       await newTodo.save();
-      newTodo = Todo.findOne({ _id: newTodo._id }).populate('userId');
+      newTodo = await Todo.findOne({ _id: newTodo._id }).populate('userId');
     return newTodo;
   } catch (e) {
     console.log(`FAILED to CREATE TODO ${text} = `, e);
+    return null;
+  }
+}
+
+export async function newNotification(likerId, todoId) {
+  try {
+    let newNotification = new Notification({ likerId, todoId });
+      await newNotification.save();
+      newNotification = await Notification
+                          .findOne({ _id: newNotification._id })
+                          .populate('likerId')
+                          .populate('todoId');
+    return newNotification;
+  } catch (e) {
+    console.log(`FAILED to CREATE NOTIFICATION `, e);
     return null;
   }
 }
@@ -65,20 +81,34 @@ export async function getUser(userId) {
   }
 }
 
+export async function getNotification(notificationId) {
+  try {
+    const notification = await Notification.findOne({_id: notificationId});
+    return notification;
+  } catch (e) {
+    console.log(`FAILED to RETRIEVE NOTIFICATION = `, e);
+    return null;
+  }
+}
+
+export async function getUserNotofications(userId) {
+  try {
+    // const { notifications } = await User.findOne({_id: userId});
+    // return notifications;
+  } catch (e) {
+    console.log(`FAILED to RETRIEVE USER id ${userId} = `, e);
+    return null;
+  }
+}
+
 export async function renameTodo(todoId, text, prevText) {
   try {
     const updatedTodo = await Todo.findOneAndUpdate(
+      { _id: todoId },
       {
-        _id: todoId
+        $set: { text: text }
       },
-      {
-        $set: {
-          text: text
-        }
-      },
-      {
-        new: true
-      },
+      { new: true },
     );
     return updatedTodo;
   } catch (e) {
@@ -88,44 +118,22 @@ export async function renameTodo(todoId, text, prevText) {
 }
 export async function likeTodo(todoId, userId) { // userId is likerId
   try {
-    const todo = await Todo.findOne({_id: todoId}).populate('userId'); // retrieve todo in db
-      console.log('todo = ', todo);
+    const todo = await Todo.findOne({_id: todoId}).populate('userId');
     var updatedLikersUserId, updatedLikes;
-    const userLiked = todo.likersUserId.map(id => id.toString()).includes(userId.toString()); // check if user existed on likersUserIdField
-    if (userLiked) { // userId on likersUserId
-      updatedLikersUserId = todo.likersUserId.map(id => id.toString()).filter( id => id !== userId.toString()); // remove userId
-      updatedLikes = Number(todo.likes) - 1; // decrease likes
-    } else if (!userLiked) { // userId not on liked
-      updatedLikersUserId = [...todo.likersUserId.map(id => id.toString()), userId]; // add userId
-      updatedLikes = Number(todo.likes) + 1; // increase likes
-      // user has not liked the todo, let's announce it to the owner of the todo by notification
-      const todoOwner = await User.findOne({ _id: todo.userId._id }) // owner of the todo to notify
-      console.log('todoOwner = ', todoOwner);
-      const userNotified = await User.findOneAndUpdate(
-        { _id: todoOwner._id },
-        {
-          $set: {
-            notifications: [
-              ...todoOwner.notifications,
-              { likerId: userId, todoId, seen: false }
-            ]
-          }
-        },
-        { new: true }
-      );
-      console.log('userNotified = ', userNotified);
+    const userLiked = todo.likersUserId.map(id => id.toString()).includes(userId.toString());
+    if (userLiked) {
+      updatedLikersUserId = todo.likersUserId.map(id => id.toString()).filter( id => id !== userId.toString());
+      updatedLikes = Number(todo.likes) - 1;
+    } else if (!userLiked) {
+      updatedLikersUserId = [...todo.likersUserId.map(id => id.toString()), userId];
+      updatedLikes = Number(todo.likes) + 1;
     }
     const updatedTodo = await Todo.findOneAndUpdate(
       { _id: todoId },
-      { 
-        $set: { // update fields
-          likersUserId: updatedLikersUserId,
-          likes: updatedLikes,
-        }
-      },
+      { $set: {  likersUserId: updatedLikersUserId, likes: updatedLikes } },
       { new: true } // return latest
-    );
-    return await Todo.findOne({_id: updatedTodo._id}).populate('userId');
+    ).populate('userId');
+    return updatedTodo;
   } catch (e) {
     console.log(`FAILED to RENAME todo id ${todoId} = `, e);
     return null;

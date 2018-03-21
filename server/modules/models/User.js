@@ -1,4 +1,4 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
@@ -16,25 +16,9 @@ const userSchema = new mongoose.Schema({
     required: false,
     index: true
   },
-  notifications: [{
-    likerId : String,
-    todoId : String,
-    seen: Boolean,
-  }],
-  todos: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Todo',
-      index: true
-    }
-  ],
-  messages: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Message',
-      index: true
-    }
-  ]
+  notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification', index: true }],
+  todos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Todo', index: true }],
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message', index: true}]
 }, {
   timestamps: {
     createdAt: 'createdAt',
