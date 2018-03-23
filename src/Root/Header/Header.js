@@ -51,18 +51,9 @@ class Header extends React.Component {
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <span style={{backgroundColor:'#fff !important'}}className="dropdown-item">
                   <ul style={{overflowY: 'scroll', height: '200px', backgroundColor:'#fff !important'}}>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li>
-                    <li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li><li>asdas</li>
+                    {this.props.viewer.notifications.edges.map(({ node }) => (
+                      <li>id: {`${node.id}`} todoId: {`${node.todoId}`} likerId: {`${node.likerId}`} seen: {`${node.seen}`} </li>
+                    ))}
                   </ul>
                 </span>
               </div>
@@ -100,22 +91,23 @@ class Header extends React.Component {
 export default createPaginationContainer(
   withRouter(Header),
   {
-    user: graphql`
-      fragment Feed_user on User
+    viewer: graphql`
+      fragment Header_viewer on User
       @argumentDefinitions(
-        count: {type: "Int", defaultValue: 10}
+        count: {type: "Int", defaultValue: 5}
         cursor: {type: "ID"}
-        orderby: {type: "[FriendsOrdering]", defaultValue: [DATE_ADDED]}
       ) {
-        feed(
+        id
+        notifications(
           first: $count
           after: $cursor
-          orderby: $orderBy # Non-pagination variables
-        ) @connection(key: "Feed_feed") {
+        ) @connection(key: "Header_notifications") {
           edges {
             node {
               id
-              ...Story_story
+              todoId
+              likerId
+              seen
             }
           }
         }
@@ -123,36 +115,24 @@ export default createPaginationContainer(
     `,
   },
   {
-    direction: 'forward',
+    direction: 'backward',
     getConnectionFromProps(props) {
-      return props.user && props.user.feed;
+      return props.viewer && props.viewer.notifications;
     },
     // This is also the default implementation of `getFragmentVariables` if it isn't provided.
     getFragmentVariables(prevVars, totalCount) {
-      return {
-        ...prevVars,
-        count: totalCount,
-      };
+      return { ...prevVars, count: totalCount, };
     },
     getVariables(props, {count, cursor}, fragmentVariables) {
-      return {
-        count,
-        cursor,
-        orderBy: fragmentVariables.orderBy,
-        // userID isn't specified as an @argument for the fragment, but it should be a variable available for the fragment under the query root.
-        userID: fragmentVariables.userID,
-      };
+      return { count, cursor, };
     },
     query: graphql`
-      # Notice that we re-use our fragment, and the shape of this query matches our fragment spec.
       query FeedPaginationQuery(
         $count: Int!
         $cursor: ID
-        $orderBy: [FriendsOrdering]!
-        $userID: ID!
       ) {
-        user: node(id: $userID) {
-          ...Feed_user @arguments(count: $count, cursor: $cursor, orderBy: $orderBy)
+        viewer {
+          ...Header_viewer @arguments(count: $count, cursor: $cursor)
         }
       }
     `
