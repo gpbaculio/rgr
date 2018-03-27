@@ -5,7 +5,7 @@ import { graphql } from 'react-relay'
 import mutationFromQuery from './mutationFromQuery'
 
 export default mutationFromQuery(graphql`
-mutation newNotification($input: NewNotificationInput!) {
+mutation newNotificationMutation($input: NewNotificationInput!) {
   newNotification(input:$input) {
     notification {
       __typename

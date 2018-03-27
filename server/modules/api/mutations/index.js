@@ -5,6 +5,7 @@ import userRegistration from './userRegistration'
 import userLogin from './userLogin'
 import createTodo from './createTodo'
 import likeTodo from './likeTodo'
+import newNotification from './newNotification'
 
 const mutations = new GraphQLObjectType({
   name: 'Mutation',
@@ -13,6 +14,7 @@ const mutations = new GraphQLObjectType({
     userLogin,
     createTodo,
     likeTodo,
+    newNotification,
   }
 })
 

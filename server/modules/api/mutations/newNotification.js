@@ -14,6 +14,7 @@ const GraphQLNewNotificationMutation = mutationWithClientMutationId({
   mutateAndGetPayload: async({todoId, likerId}) => {
     const notification = await newNotification(todoId, likerId);
     pubSub.publish('newNotification', { newNotification: { notification } });
+    console.log('notification = ', notification);
     return ({ notification });
   },
   outputFields: {

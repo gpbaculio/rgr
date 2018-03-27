@@ -22,7 +22,7 @@ class Login extends React.Component {
     }
   }
 
-  _login = (e) => {
+  _login = e => {
     e.preventDefault();
     const { email, password } = this.state;
     this.setState({ loginClicked: true });
@@ -34,10 +34,7 @@ class Login extends React.Component {
           const {history} = this.props;
           let state = { loginClicked: false, email: '', password: '', };
           if (!token && error) {
-            state = {
-              ...state,
-              loginError: true,
-            }
+            state = { ...state, loginError: true, };
           }
           localStorage.setItem('token', token);
           this.setState({ ...state })

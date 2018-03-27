@@ -31,6 +31,7 @@ const GraphQLUserType = new GraphQLObjectType({
       },
       resolve: async(_root, { ...args }, { user }) => {
         const allTodosByViewer = await getAllTodosByViewer(user._id);
+        console.log('allTodosByViewer = ', allTodosByViewer);
         return connectionFromArray(allTodosByViewer, args)
       }
     },
@@ -46,11 +47,11 @@ const GraphQLUserType = new GraphQLObjectType({
     },
     notifications: {
       type: notificationsConnection,
-      args: {
-        ...connectionArgs,
-      },
+      args: { ...connectionArgs, },
       resolve: async(_root, { ...args }, { user }) => {
-        return connectionFromArray(await getUserNotofications(user._id), args)
+        const notifications = await getUserNotofications(user._id);
+        console.log('getUserNotofications user = ', notifications)
+        return connectionFromArray(notifications, args)
       }
     }
   })

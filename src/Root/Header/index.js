@@ -5,7 +5,7 @@ import Header from './Header';
 import env from '../relayEnv';
 
 const HeaderQuery = graphql`
-  query indexQuery($count: Int!, $cursor: ID) {
+  query HeaderQuery($count: Int!, $cursor: String) {
     viewer {
       ...Header_viewer @arguments(count: $count, cursor: $cursor)
     }

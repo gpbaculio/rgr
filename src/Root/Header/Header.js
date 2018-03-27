@@ -4,6 +4,10 @@ import { createPaginationContainer, graphql } from 'react-relay';
 import './style.css';
 
 class Header extends React.Component {
+  async componentWillReceiveProps(nextProps) {
+    await this.props.relay.refetch({}, {}, ()=>console.log('force fetch on receive props'), {force: true})
+    console.log('Header nextProps = ', nextProps);
+  }
   render() {
     const authorized = localStorage.getItem('token')
     const { viewer } = this.props;
@@ -97,7 +101,7 @@ export default createPaginationContainer(
   {
     viewer: graphql`
       fragment Header_viewer on User
-      @argumentDefinitions(count: {type: "Int", defaultValue: 5}, cursor: {type: "ID"}) {
+      @argumentDefinitions(count: {type: "Int", defaultValue: 5}, cursor: {type: "String"}) {
         id
         notifications(first: $count, after: $cursor) @connection(key: "Header_notifications") {
           edges {
@@ -127,7 +131,7 @@ export default createPaginationContainer(
     query: graphql`
       query HeaderPaginationQuery(
         $count: Int!
-        $cursor: ID
+        $cursor: String
       ) {
         viewer {
           ...Header_viewer @arguments(count: $count, cursor: $cursor)

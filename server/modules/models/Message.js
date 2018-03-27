@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 
 const MessageSchema = new mongoose.Schema({
-  text: {
-    type: String
-  },
+  text: { type: String },
   seen: {
     type: Boolean
   },

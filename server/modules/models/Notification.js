@@ -1,9 +1,13 @@
 import mongoose from 'mongoose';
 
 const NotificationSchema = new mongoose.Schema({
-  likerId: { type : mongoose.Schema.Types.ObjectId, ref: 'User' },
-  todoId: { type : mongoose.Schema.Types.ObjectId, ref: 'Todo' },
-  complete: {
+  likerId: {
+    type: String,
+  },
+  todoId: {
+    type: String,
+  },
+  seen: {
     type: Boolean,
     default: false,
   },

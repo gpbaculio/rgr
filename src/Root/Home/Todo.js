@@ -3,21 +3,24 @@ import { createFragmentContainer, graphql } from 'react-relay';
 import { fromGlobalId } from 'graphql-relay';
 
 import likeTodoMutation from '../../mutations/likeTodo';
-import TodoLikedSubscription from '../../subscriptions/todoAdded';
+import newNotificationMutation from '../../mutations/newNotification';
 
 class Todo extends Component {
   _likeTodo = e => {
     e.preventDefault();
     const { viewer, todo } = this.props;
-    const { id: clientUserId } = viewer; // userId is owner of the todo
+    const todoId = fromGlobalId(todo.id).id;
+    const likerId = fromGlobalId(viewer.id).id;
+    console.log('liketodo todoId = ', todoId);
+    console.log('liketodo likerId = ', likerId);
     const mutation = likeTodoMutation(
-      { todoId: fromGlobalId(todo.id).id, userId: fromGlobalId(clientUserId).id },
+      { todoId, userId: likerId },
       {
         optimisticUpdater: store => {
           const todoProxy = store.get(todo.id)
           const todoProxyLikes = todoProxy.getValue('likes')
           const todoProxyLikersUserId = todoProxy.getValue('likersUserId')
-          const userIdinDb = fromGlobalId(clientUserId).id
+          const userIdinDb = fromGlobalId(likerId).id
           const userLiked = todoProxyLikersUserId.includes(userIdinDb)
           const newTodoLikes = userLiked ? todoProxyLikes - 1 : todoProxyLikes + 1
           const newTodoLikersUserId = userLiked ? [...todoProxyLikersUserId].filter(id => id !== userIdinDb) : [...todoProxyLikersUserId, userIdinDb]
@@ -25,13 +28,7 @@ class Todo extends Component {
             todoProxy.setValue(newTodoLikersUserId, 'likersUserId')
         },
         updater: store => {
-          const todoFieldsToUpdate = [
-            'text',
-            'complete',
-            'owner',
-            'likes',
-            'likersUserId',
-          ];
+          const todoFieldsToUpdate = [ 'text', 'complete', 'owner', 'likes', 'likersUserId'];
           const likeTodoPayload = store.getRootField('likeTodo'); // payload from the mutation name
             const todoEdge = likeTodoPayload.getLinkedRecord('todo'); // the new todo added
             const todoNode = todoEdge.getLinkedRecord('node');
@@ -41,11 +38,23 @@ class Todo extends Component {
             todoProxy.setValue(value, field)
           });
         },
+        onCompleted: () => console.log('like completed')
       },
     );
     mutation.commit()
+    this._newNotification(todoId, likerId)
   }
-  
+  _newNotification = (todoId, likerId) => {
+    const ntfmutation = newNotificationMutation(
+      { todoId, likerId },
+      {
+        onCompleted: () => console.log('newNotificationMutation completed!'),
+        onError: () => console.log('newNotificationMutation error!'),
+      }
+    );
+    ntfmutation.commit()
+    console.log('_newNotification invoked')
+  }
   render() {
     const { todo, viewer } = this.props;
     const userIdinDb = fromGlobalId(viewer.id).id;

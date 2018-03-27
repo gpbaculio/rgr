@@ -1,6 +1,7 @@
 import Todo from './models/Todo';
 import User from './models/User';
 import Notification from './models/Notification';
+import mongoose from 'mongoose';
 
 export async function createTodo(text, userId) {
   try {
@@ -14,15 +15,15 @@ export async function createTodo(text, userId) {
   }
 }
 
-export async function newNotification(likerId, todoId) {
+export async function newNotification(todoId, likerId) {
   try {
-    let newNotification = new Notification({ likerId, todoId });
+    console.log('newNotification likerId = ', likerId);
+    console.log('newNotification todoId = ', todoId);
+    const newNotification = new Notification({ likerId, todoId });
       await newNotification.save();
-      newNotification = await Notification
-                          .findOne({ _id: newNotification._id })
-                          .populate('likerId')
-                          .populate('todoId');
-    return newNotification;
+      const latestNotification = await Notification.findOne({ _id: newNotification._id })
+              
+    return latestNotification;
   } catch (e) {
     console.log(`FAILED to CREATE NOTIFICATION `, e);
     return null;
@@ -42,6 +43,7 @@ export async function registerUser(displayName, email, password) {
 export async function getAllTodosByViewer(userId) { // by default, status = 'any'
   try {
     const todos = await Todo.find({userId}).populate('userId').sort({createdAt: 'descending'});
+    console.log('getAllTodosByViewer todos = ', todos);
     return todos;
   } catch (e) {
     console.log(`FAILED to RETRIEVE ALL TODOS BY VIEWER! ${userId} = `,e);
@@ -49,10 +51,22 @@ export async function getAllTodosByViewer(userId) { // by default, status = 'any
   }
 }
 
+export async function getUserNotofications(userId) {
+  try {
+    const todos = await Todo.find({userId}).sort({createdAt: 'descending'});
+    const todoIds = todos.map(({ _id }) => _id.toString());
+    const notifications = await Notification.find({ todoId: { $in: todoIds } }) //https://stackoverflow.com/questions/8303900/mongodb-mongoose-findmany-find-all-documents-with-ids-listed-in-array
+    console.log('userId = ', userId);
+    return notifications.filter(n => n.likerId.toString() !== userId.toString());
+  } catch (e) {
+    console.log(`FAILED to RETRIEVE USER id ${userId} = `, e);
+    return null;
+  }
+}
+
 export async function getPublicTodos() {
   try {
     const publicTodos = await Todo.find({}).populate('userId').sort({createdAt: 'descending'}); // so we can see the latest todo added
-    console.log('publicTodos = ', publicTodos);
     return publicTodos;
   } catch (e) {
     console.log('FAILED to RETRIEVE PUBLIC TODOS = ', e)
@@ -73,7 +87,6 @@ export async function getTodo(todoId) {
 export async function getUser(userId) {
   try {
     const user = await User.findOne({_id: userId});
-    console.log('getUser found! = ', user);
     return user;
   } catch (e) {
     console.log(`FAILED to RETRIEVE USER id ${userId} = `, e);
@@ -87,16 +100,6 @@ export async function getNotification(notificationId) {
     return notification;
   } catch (e) {
     console.log(`FAILED to RETRIEVE NOTIFICATION = `, e);
-    return null;
-  }
-}
-
-export async function getUserNotofications(userId) {
-  try {
-    // const { notifications } = await User.findOne({_id: userId});
-    // return notifications;
-  } catch (e) {
-    console.log(`FAILED to RETRIEVE USER id ${userId} = `, e);
     return null;
   }
 }
@@ -142,17 +145,9 @@ export async function likeTodo(todoId, userId) { // userId is likerId
 export async function toggleTodoStatus(todoId, status, text) {
   try {
     const updatedTodo = await Todo.findOneAndUpdate(
-      {
-        _id: todoId
-      },
-      {
-        $set: {
-          complete: !status
-        }
-      },
-      {
-        new: true
-      }
+      {  _id: todoId },
+      { $set: { complete: !status } },
+      { new: true }
     );
     return updatedTodo;
   } catch (e) {
