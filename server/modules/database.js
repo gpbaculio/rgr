@@ -1,7 +1,7 @@
 import Todo from './models/Todo';
 import User from './models/User';
 import Notification from './models/Notification';
-import mongoose from 'mongoose';
+import * as auth from './auth'
 
 export async function createTodo(text, userId) {
   try {
@@ -51,8 +51,18 @@ export async function getAllTodosByViewer(userId) { // by default, status = 'any
   }
 }
 
-export async function getUserNotofications(userId) {
+export async function getUserNotofications(userId, userIdForRefetch) {
   try {
+    if(userIdForRefetch) {
+      console.log('token refetching on connection! = ', userIdForRefetch);
+      const {user:userRefetch} = await auth.getUser(userIdForRefetch)
+      console.log('userId = ', userRefetch);
+      const todos = await Todo.find({userId: userRefetch._id}).sort({createdAt: 'descending'});
+    const todoIds = todos.map(({ _id }) => _id.toString());
+    const notifications = await Notification.find({ todoId: { $in: todoIds } }) //https://stackoverflow.com/questions/8303900/mongodb-mongoose-findmany-find-all-documents-with-ids-listed-in-array
+
+    return notifications.filter(n => n.likerId.toString() !== userRefetch._id.toString());
+    }
     const todos = await Todo.find({userId}).sort({createdAt: 'descending'});
     const todoIds = todos.map(({ _id }) => _id.toString());
     const notifications = await Notification.find({ todoId: { $in: todoIds } }) //https://stackoverflow.com/questions/8303900/mongodb-mongoose-findmany-find-all-documents-with-ids-listed-in-array

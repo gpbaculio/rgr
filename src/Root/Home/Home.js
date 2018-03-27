@@ -9,13 +9,6 @@ import './style.css';
 import TodoAddedSubscription from '../../subscriptions/todoAdded';
 import TodoLikedSubscription from '../../subscriptions/todoLiked';
 
-const todoFields = [
-  'text',
-  'complete',
-  'owner',
-  'likes',
-  'likersUserId',
-];
 
 class Home extends React.Component {
   //subscriptions

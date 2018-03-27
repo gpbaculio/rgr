@@ -47,9 +47,9 @@ const GraphQLUserType = new GraphQLObjectType({
     },
     notifications: {
       type: notificationsConnection,
-      args: { ...connectionArgs, },
-      resolve: async(_root, { ...args }, { user }) => {
-        const notifications = await getUserNotofications(user._id);
+      args: { userId: { type: GraphQLString }, ...connectionArgs },
+      resolve: async(_root, { userId, ...args }, { user }) => {
+        const notifications = await getUserNotofications(user._id, userId);
         console.log('getUserNotofications user = ', notifications)
         return connectionFromArray(notifications, args)
       }
