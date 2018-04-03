@@ -8,7 +8,7 @@ import './style.css';
 // local imports
 import TodoAddedSubscription from '../../subscriptions/todoAdded';
 import TodoLikedSubscription from '../../subscriptions/todoLiked';
-
+import NewNotificationSub from '../../subscriptions/newNotification';
 
 class Home extends React.Component {
   //subscriptions
@@ -31,6 +31,13 @@ class Home extends React.Component {
         });
     }
   })
+  newNotification = NewNotificationSub({}, {
+    onCompleted: () => console.log('Successful NewNotificationSub completed'),
+    onError: transaction => console.log('FAILED NewNotificationSub completed'),
+    onNext: response => {
+      console.log('newnotif response = ', response);
+    },
+  })
   subscribeTodoAdded = TodoAddedSubscription({}, {})
   componentDidMount() {
     this.todoAddedubscription = this.subscribeTodoAdded.commit([
@@ -46,11 +53,25 @@ class Home extends React.Component {
         edgeName: 'todo'
       }
     ])
+    this.updateNotification = this.newNotification.commit([
+      {
+        type: 'RANGE_ADD',
+        parentID: this.props.viewer.id,
+        connectionInfo: [
+          {
+            key: 'Header_notifications',
+            rangeBehavior: 'prepend'
+          }
+        ],
+        edgeName: 'notification'
+      }
+    ])
     this.todoLikedsubscription = this.subscribeTodoLiked.commit()
   }
   componentWillUnmount() {
     this.todoAddedubscription.dispose()
     this.todoLikedsubscription.dispose()
+    this.updateNotification.dispose()
   }
   render() {
     const { viewer } = this.props;
@@ -72,7 +93,7 @@ class Home extends React.Component {
 export default createRefetchContainer(
   Home,
   graphql`
-    fragment  Home_viewer on User
+    fragment Home_viewer on User
     @argumentDefinitions(  count: {type: "Int"}, cursor: {type: "String"}) {
       id
       ...Todo_viewer

@@ -5,10 +5,16 @@ import './style.css';
 
 class Header extends React.Component {
   async componentWillReceiveProps(nextProps) {
+    console.log('Header nextProps = ', nextProps);
+    if (nextProps.location.pathname !== '/home') {
+      await this.props.relay.refetchConnection(5,(e) => console.log('refetching'), {
+        userId: localStorage.getItem('token')
+      });
+    }
     this.forceUpdate()
-    await this.props.relay.refetchConnection(5,(e) => console.log('refetching'), {
-      userId: localStorage.getItem('token')
-    });
+  }
+  componentWillUnmount() {
+    localStorage.removeItem('token')
   }
   render() {
     const authorized = localStorage.getItem('token')
@@ -62,7 +68,7 @@ class Header extends React.Component {
                   <span style={{backgroundColor:'#fff !important'}}className="dropdown-item">
                     <ul style={{overflowY: 'scroll', height: '200px', backgroundColor:'#fff !important'}}>
                       {typeof this.props.viewer.notifications !== "undefined" ? this.props.viewer.notifications.edges.map(({ node }) => (
-                        <li>id: {`${node.id}`} todoId: {`${node.todoId}`} likerId: {`${node.likerId}`} seen: {`${node.seen}`} </li>
+                        <li key={node.id}>id: {`${node.id}`} todoId: {`${node.todoId}`} likerId: {`${node.likerId}`} seen: {`${node.seen}`} </li>
                       )): 'none'}
                     </ul>
                   </span>

@@ -17,6 +17,7 @@
     "apollo-server-express": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "bootstrap": "^4.0.0",
     "express": "^4.16.2",
     "graphql": "^0.11.7",
     "graphql-relay": "^0.5.4",
@@ -28,6 +29,7 @@
     "react-relay": "^1.4.1",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "reactstrap": "^5.0.0",
     "relay-devtools": "^1.4.0",
     "subscriptions-transport-ws": "^0.9.4",
     "whatwg-fetch": "^2.0.3"

@@ -10,10 +10,10 @@ const NewNotificationPayloadType = new GraphQLObjectType({
   fields: () => ({
     notification: {
       type: GraphQLNotificationEdge,
-      resolve: ({ newNotification }) => {
+      resolve: ({ notification }) => {
         return ({
-          cursor: offsetToCursor(newNotification.id),
-          node: newNotification
+          cursor: offsetToCursor(notification.id),
+          node: notification
         })
       }
     }
