@@ -11,7 +11,7 @@ class Todo extends Component {
     const { viewer, todo } = this.props;
     const todoId = fromGlobalId(todo.id).id;
     const likerId = fromGlobalId(viewer.id).id;
-    const mutation = likeTodoMutation(
+    const likeMutation = likeTodoMutation(
       { todoId, userId: likerId },
       {
         optimisticUpdater: store => {
@@ -39,15 +39,9 @@ class Todo extends Component {
         onCompleted: () => console.log('like completed')
       },
     );
-    const ntfmutation = newNotificationMutation(
-      { todoId, likerId },
-      {
-        onCompleted: () => console.log('newNotificationMutation completed!'),
-        onError: () => console.log('newNotificationMutation error!'),
-      }
-    );
-    mutation.commit()
-    ntfmutation.commit()
+    const notificationMutation = newNotificationMutation( { todoId, likerId }, {});
+    likeMutation.commit()
+    notificationMutation.commit()
   }
   render() {
     const { todo, viewer } = this.props;

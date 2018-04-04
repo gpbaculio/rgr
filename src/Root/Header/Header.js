@@ -3,18 +3,17 @@ import { NavLink, withRouter } from 'react-router-dom';
 import { createPaginationContainer, graphql } from 'react-relay';
 import './style.css';
 
+import logoutMutation from '../../mutations/logoutMutation';
+
 class Header extends React.Component {
   async componentWillReceiveProps(nextProps) {
-    console.log('Header nextProps = ', nextProps);
-    if (nextProps.location.pathname !== '/home') {
-      await this.props.relay.refetchConnection(5,(e) => console.log('refetching'), {
-        userId: localStorage.getItem('token')
-      });
+    if (this.props.viewer === null && typeof nextProps.viewer !== 'undefined') {
+      await this.props.relay.refetchConnection(
+        5,
+        (e) => console.log('refetching'),
+        { userId: localStorage.getItem('token') }
+      );
     }
-    this.forceUpdate()
-  }
-  componentWillUnmount() {
-    localStorage.removeItem('token')
   }
   render() {
     const authorized = localStorage.getItem('token')
@@ -38,7 +37,7 @@ class Header extends React.Component {
               </NavLink>
             </li>
           </ul>
-          {authorized && viewer ?
+          {authorized && this.props.viewer ?
             <ul>
               <li className="nav-item">
                 <NavLink
@@ -69,19 +68,20 @@ class Header extends React.Component {
                     <ul style={{overflowY: 'scroll', height: '200px', backgroundColor:'#fff !important'}}>
                       {typeof this.props.viewer.notifications !== "undefined" ? this.props.viewer.notifications.edges.map(({ node }) => (
                         <li key={node.id}>id: {`${node.id}`} todoId: {`${node.todoId}`} likerId: {`${node.likerId}`} seen: {`${node.seen}`} </li>
-                      )): 'none'}
+                      )): 'Loading...'}
                     </ul>
                   </span>
                 </div>
               </li> 
             </ul>
           : ''}
-          {authorized && viewer ?
+          {authorized && this.props.viewer ?
             <span
               className="navbar-text"
               onClick={() => {
                 localStorage.removeItem('token')
-                this.props.history.push('login')
+                this.props.history.push('/login')
+                this.props.logout()
               }}
             >
               <i className="fa fa-sign-out"/>

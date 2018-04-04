@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { QueryRenderer, graphql } from 'react-relay';
+import {Environment} from 'relay-runtime';
 
 import Header from './Header';
 import env from '../relayEnv';
+import { network, store } from '../relayEnv';
 
 const HeaderQuery = graphql`
   query HeaderQuery($count: Int, $cursor: String, $userId: String) {
@@ -12,11 +14,17 @@ const HeaderQuery = graphql`
   }
 `;
 
+let environment = new Environment({network, store});
+
 class HeaderRenderer extends Component {
+  logout = () => {
+    environment = new Environment({network, store})
+    console.log('logout fired')
+  }
   render() {
     return (
       <QueryRenderer
-        environment={env}
+        environment={environment}
         query={HeaderQuery}
         variables={{ count: 5 }}
         render={({error, props}) => {
@@ -28,13 +36,11 @@ class HeaderRenderer extends Component {
           }
           if (props) {
             return (
-              <Header viewer={props.viewer}/>
+              <Header logout={this.logout} viewer={props.viewer}/>
             );
           }
           return (
-            <div>
-              Loading...
-            </div>
+            <Header logout={this.logout} viewer={null} />
           );
         }}
       />

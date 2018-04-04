@@ -1,7 +1,9 @@
 import {Environment, Network, RecordSource, Store} from 'relay-runtime';
 import {SubscriptionClient} from 'subscriptions-transport-ws'
 import 'whatwg-fetch'
-const store = new Store(new RecordSource())
+
+export const store = new Store(new RecordSource())
+
 const fetchQuery = (operation, variables) => {
   return fetch('/graphql', {
     method: 'POST',
@@ -61,7 +63,7 @@ const setupSubscription = (config, variables, cacheConfig, observer) => {
   }
 }
 
-const network = Network.create(fetchQuery, setupSubscription)
+export const network = Network.create(fetchQuery, setupSubscription)
 
 const environment = new Environment({network, store})
 

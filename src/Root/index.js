@@ -35,7 +35,9 @@ class App extends Component {
           <InputGroup>
             <Input value={name} placeholder="name" name="name" onChange={this.handleChange} />
             <Input value={email} placeholder="email" name="email" onChange={this.handleChange} />
-            <InputGroupAddon addonType="append" onClick={() => window.growTiger(name, email)} ><Button>Subscribe</Button></InputGroupAddon>
+            <InputGroupAddon addonType="append" onClick={() => window.growTiger(name, email)} >
+              <Button>Subscribe</Button>
+            </InputGroupAddon>
           </InputGroup>
         </div>
         <Switch>
