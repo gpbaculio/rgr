@@ -21,7 +21,6 @@ const GraphQLNewNotificationMutation = mutationWithClientMutationId({
     notification: {
       type: GraphQLNotificationEdge,
       resolve: ({notification}) => {
-        console.log('outputfields notification = ', notification);
         return ({
           cursor: offsetToCursor(notification.id),
           node: notification

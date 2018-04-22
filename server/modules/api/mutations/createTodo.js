@@ -14,16 +14,8 @@ const GraphQLCreateTodoMutation = mutationWithClientMutationId({
   mutateAndGetPayload: async({text, userId}) => {
     // userId is a relay id, id is id from db
     const newTodo = await createTodo(text, fromGlobalId(userId).id);
-    pubSub.publish(
-      'todoAdded', {
-        todoAdded: {
-          newTodo
-        }
-      }
-    );
-    return ({
-      todo: newTodo
-    });
+    pubSub.publish('todoAdded', { todoAdded: { newTodo } });
+    return ({ todo: newTodo });
   },
   outputFields: {
     todo: {

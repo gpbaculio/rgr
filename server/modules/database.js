@@ -54,13 +54,10 @@ export async function getAllTodosByViewer(userId) { // by default, status = 'any
 export async function getUserNotofications(userId, userIdForRefetch) {
   try {
     if(userIdForRefetch) {
-      console.log('token refetching on connection! = ', userIdForRefetch);
-      const {user:userRefetch} = await auth.getUser(userIdForRefetch)
-      console.log('userId = ', userRefetch);
-      const todos = await Todo.find({userId: userRefetch._id}).sort({createdAt: 'descending'});
+    const {user:userRefetch} = await auth.getUser(userIdForRefetch)
+    const todos = await Todo.find({userId: userRefetch._id}).sort({createdAt: 'descending'});
     const todoIds = todos.map(({ _id }) => _id.toString());
     const notifications = await Notification.find({ todoId: { $in: todoIds } }) //https://stackoverflow.com/questions/8303900/mongodb-mongoose-findmany-find-all-documents-with-ids-listed-in-array
-
     return notifications.filter(n => n.likerId.toString() !== userRefetch._id.toString());
     }
     const todos = await Todo.find({userId}).sort({createdAt: 'descending'});
@@ -116,18 +113,18 @@ export async function getNotification(notificationId) {
 
 export async function renameTodo(todoId, text, prevText) {
   try {
-    const updatedTodo = await Todo.findOneAndUpdate(
-      { _id: todoId },
-      {
-        $set: { text: text }
-      },
-      { new: true },
-    );
-    return updatedTodo;
+    return await Todo.findOneAndUpdate({ _id: todoId }, { $set: { text: text } }, { new: true });
   } catch (e) {
     console.log(`FAILED to RENAME todo id ${todoId} = `, e);
     return null;
   }
+}
+export async function seenAllNotification(ids) {
+  const notifs = ids.map(async (id) => {
+    return await Notification.findOneAndUpdate({ _id: id }, { $set: { seen: true } }, { new:true });       
+  });
+  console.log('notifs = ', notifs);
+  return notifs;
 }
 export async function likeTodo(todoId, userId) { // userId is likerId
   try {

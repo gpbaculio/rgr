@@ -3,17 +3,40 @@ import { NavLink, withRouter } from 'react-router-dom';
 import { createPaginationContainer, graphql } from 'react-relay';
 import './style.css';
 
-import logoutMutation from '../../mutations/logoutMutation';
+import seenAllNotification from '../../mutations/seenAllNotification';
 
 class Header extends React.Component {
   async componentWillReceiveProps(nextProps) {
     if (this.props.viewer === null && typeof nextProps.viewer !== 'undefined') {
-      await this.props.relay.refetchConnection(
-        5,
-        (e) => console.log('refetching'),
-        { userId: localStorage.getItem('token') }
-      );
+      await this.props.relay.refetchConnection(5, (e) => console.log('refetching'), { userId: localStorage.getItem('token') });
     }
+  }
+  _seenAllNotification = (e) => {
+    e.preventDefault();
+    const { viewer } = this.props;
+    const ids = viewer.notifications.edges.map(({ node }) => node.id)
+    const mutation = seenAllNotification(
+      { ids },
+      {
+        updater: (store) => {
+          const payload = store.getRootField('seenAllNotification'); // payload from the mutation name
+          const notifEdges = payload.getLinkedRecords('seenNotifications'); // the new todo added
+          notifEdges.forEach(({ node }) => {
+            const notifProxy = store.get(node.id);
+            notifProxy.setValue(notifProxy.getValue('seen'), 'seen');
+          });
+        },
+        optimisticUpdater: (store) => {
+          const payload = store.getRootField('seenAllNotification'); // payload from the mutation name
+          const notifEdges = payload.getLinkedRecords('seenNotifications'); // the new todo added
+          notifEdges.forEach(({ node }) => {
+            const notifProxy = store.get(node.id);
+            notifProxy.setValue(notifProxy.getValue('seen'), 'seen'); // 1st arg is value to assign, 2nd arg is field to update!
+          });
+        },
+      },
+    );
+    mutation.commit();
   }
   render() {
     const authorized = localStorage.getItem('token')
@@ -67,7 +90,7 @@ class Header extends React.Component {
                   <span style={{backgroundColor:'#fff !important'}}className="dropdown-item">
                     <ul style={{overflowY: 'scroll', height: '200px', backgroundColor:'#fff !important'}}>
                       {typeof this.props.viewer.notifications !== "undefined" ? this.props.viewer.notifications.edges.map(({ node }) => (
-                        <li key={node.id}>id: {`${node.id}`} todoId: {`${node.todoId}`} likerId: {`${node.likerId}`} seen: {`${node.seen}`} </li>
+                        <li style={node.seen ? {backgroundColor: 'blue'} : {backgroundColor: 'red'}} key={node.id}>id: {`${node.id}`} todoId: {`${node.todoId}`} likerId: {`${node.likerId}`} seen: {`${node.seen}`} </li>
                       )): 'Loading...'}
                     </ul>
                   </span>

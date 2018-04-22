@@ -34,12 +34,12 @@ class HeaderRenderer extends Component {
               <div>{error.message}</div>
             );
           }
-          if (props) {
+          if (props) { // logged in
             return (
               <Header logout={this.logout} viewer={props.viewer}/>
             );
           }
-          return (
+          return ( // Not logged in
             <Header logout={this.logout} viewer={null} />
           );
         }}
